@@ -4,8 +4,7 @@ function Pinterest(confPinterestApp) {
 }
 
 Pinterest.prototype.test = function () {
-  console.log(this.getAuthorizeCode());
-  console.log(this.getAccessToken('aze'));
+//
 };
 
 Pinterest.prototype.getAppName = function () {
@@ -17,7 +16,7 @@ Pinterest.prototype.getAuthorizeCode = function () {
       + 'response_type=code&'
       + 'redirect_uri=' + this.conf.callback_url + '&'
       + 'client_id=' + this.conf.consumer_key + '&'
-      + 'scope=read_public,write_public&'
+      + 'scope=read_public&'
       + 'state=768uyFys';
 };
 
@@ -25,8 +24,23 @@ Pinterest.prototype.getAccessToken = function (code) {
   return 'https://api.pinterest.com/v1/oauth/token?'
       + 'grant_type=authorization_code&'
       + 'client_id=' + this.conf.consumer_key + '&'
-      + 'client_secret=' + this.conf.consumer_key + '&'
+      + 'client_secret=' + this.conf.consumer_secret + '&'
       + 'code=' + code;
+};
+
+Pinterest.prototype.boards = function (username, board) {
+  return 'https://api.pinterest.com/v1/boards/'+username+'/'+board+'/?'
+      + 'access_token=' + this.conf.access_token;
+};
+
+Pinterest.prototype.boards = function (username, board) {
+  return 'https://api.pinterest.com/v1/boards/'+username+'/'+board+'/?'
+      + 'access_token=' + this.conf.access_token;
+};
+
+Pinterest.prototype.pins = function (username, board) {
+  return 'https://api.pinterest.com/v1/boards/'+username+'/'+board+'/pins/?'
+      + 'access_token=' + this.conf.access_token;
 };
 
 Pinterest.prototype.checkScope = function () {
