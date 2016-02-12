@@ -1,0 +1,23 @@
+{
+  "name": "rpinterestbot",
+  "version": "1.0.0",
+  "description": "Bot for Pinterest",
+  "main": "job.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rancoud/RPinterestBot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rancoud/RPinterestBot/issues"
+  },
+  "homepage": "https://github.com/rancoud/RPinterestBot#readme",
+  "devDependencies": {
+    "colors": "^1.1.2",
+    "npmlog": "^2.0.0"
+  }
+}
