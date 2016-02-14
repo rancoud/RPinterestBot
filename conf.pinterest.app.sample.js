@@ -4,6 +4,7 @@ module.exports = [
     consumer_key: '',
     consumer_secret: '',
     access_token: '',
-    callback_url: ''
+    callback_url: '',
+    scope: ['read_public']
   }
 ];
