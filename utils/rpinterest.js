@@ -159,14 +159,6 @@ RPinterest.prototype.getAccessToken = function(code, callback) {
   });
 };
 
-RPinterest.prototype.checkScope = function() {
-  /*None (must know the identifier)	Use GET method on a user’s profile, board and Pin details, and the Pins on a board.
-  read_public	Use GET method on a user’s Pins, boards and likes.
-  write_public	Use PATCH, POST and DELETE methods on a user’s Pins and boards.
-  read_relationships	Use GET method on a user’s follows and followers (on boards, users and interests).
-  write_relationships	Use PATCH, POST and DELETE methods on a user’s follows and followers (on boards, users and interests).*/
-};
-
 RPinterest.prototype.callApiV1 = function(method, uri, callback) {
   var that = this;
 

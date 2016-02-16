@@ -4,13 +4,13 @@ Bot for Pinterest
 ## Setup
 1. Create Pinterest application
 2. Rename conf.pinterest.app.sample.js to conf.pinterest.app.js
-3. Fill the file with **name** , **consumer_key** , **consumer_secret** , **access_token_key** , **access_token_secret** (**callback_url** is for user authentification)
+3. Fill the file with **name** , **consumer_key** , **consumer_secret** , **access_token** (**callback_url** and **scope** is for user authentification)
 4. Create your job in folder jobs
 
 ## Example
 Once your pinterest application created you can run job.
 ```
-node job example
+node job me
 ```
 
 ## How to write job
@@ -36,6 +36,11 @@ node pid kill all
 
 ## JOBS
 * example -> do nothing
+* me -> return authenticated user information
+* my_boards -> return authenticated user’s public boards
+* get_pins_in_board -> returns list of Pins on the board
+* valid_board -> check if argument provided is a valid board
+* valid_user -> check if argument provided is a valid_user
 
 ## Pinterest User Authentification
 Getting access token for external user with an app.  
