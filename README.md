@@ -100,6 +100,12 @@ Url images in 60x60 in sandbox
 
 Can't see private board (will be never support by pinterest team)  
 
+List of Scopes  
+* read_public : Use GET method on a user’s Pins, boards and likes.  
+* write_public : Use PATCH, POST and DELETE methods on a user’s Pins and boards.  
+* read_relationships : Use GET method on a user’s follows and followers (on boards, users and interests).  
+* write_relationships : Use PATCH, POST and DELETE methods on a user’s follows and followers (on boards, users and interests).  
+
 ## TODO
 * complete
 
