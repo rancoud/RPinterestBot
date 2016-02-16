@@ -1,15 +1,6 @@
 function Pin(pin) {
   this.pin = pin;
-  this.isComplete = true;
 }
-
-Pin.prototype.isComplete = function() {
-  return this.isComplete;
-};
-
-Pin.prototype.setComplete = function(bool) {
-  this.isComplete = bool;
-};
 
 Pin.prototype.getJson = function() {
   return this.pin;
@@ -32,26 +23,7 @@ Pin.prototype.getUrl = function() {
 };
 
 Pin.prototype.getCreator = function() {
-  var user = new User(this.pin.creator);
-  user.setComplete(false);
-
-  return user;
-};
-
-Pin.prototype.getCreatorUrl = function() {
-  return this.pin.creator.url;
-};
-
-Pin.prototype.getCreatorId = function() {
-  return this.pin.creator.id;
-};
-
-Pin.prototype.getCreatorFirstName = function() {
-  return this.pin.creator.first_name;
-};
-
-Pin.prototype.getCreatorLastName = function() {
-  return this.pin.creator.last_name;
+  return new User(this.pin.creator);
 };
 
 Pin.prototype.getCreatorJson = function() {
@@ -59,22 +31,7 @@ Pin.prototype.getCreatorJson = function() {
 };
 
 Pin.prototype.getBoard = function() {
-  var board = new Board(this.pin.board);
-  board.setComplete(false);
-
-  return board;
-};
-
-Pin.prototype.getBoardUrl = function() {
-  return this.pin.board.url;
-};
-
-Pin.prototype.getBoardId = function() {
-  return this.pin.board.id;
-};
-
-Pin.prototype.getBoardName = function() {
-  return this.pin.board.name;
+  return new Board(this.pin.board);
 };
 
 Pin.prototype.getBoardJson = function() {
@@ -202,7 +159,7 @@ Pin.prototype.getAttributionJson = function() {
 
 Pin.prototype.getImage = function() {
   for(images in this.pin.image) {
-    return this.pin.image[images].url;
+    return this.pin.image[images].url || '';
   }
 
   return '';
@@ -212,7 +169,9 @@ Pin.prototype.getImages = function() {
   var img = [];
 
   for(images in this.pin.image) {
-    img.push(this.pin.image[images].url);
+    if(this.pin.image[images].url !== null) {
+      img.push(this.pin.image[images].url);
+    }
   }
 
   return img;
@@ -231,10 +190,3 @@ Pin.prototype.getMetadataJson = function() {
 };
 
 global.Pin = Pin;
-
-/*
- media	map<string,string>	The media type of the Pin (image or video).
- attribution	map<string,string>	The source data for videos, including the title, URL, provider, author name, author URL and provider name.
- image	map<string,image>	The Pin’s image. The default response returns the image’s URL, width and height.
- metadata	map<string,object>	Extra information about the Pin for Rich Pins. Includes the Pin type (e.g., article, recipe) and related information (e.g., ingredients, author).
-*/

@@ -1,15 +1,6 @@
 function Board(board) {
   this.board = board;
-  this.isComplete = true;
 }
-
-Board.prototype.isComplete = function() {
-  return this.isComplete;
-};
-
-Board.prototype.setComplete = function(bool) {
-  this.isComplete = bool;
-};
 
 Board.prototype.getJson = function() {
   return this.board;
@@ -32,26 +23,7 @@ Board.prototype.getDescription = function() {
 };
 
 Board.prototype.getCreator = function() {
-  var user = new User(this.board.creator);
-  user.setComplete(false);
-
-  return user;
-};
-
-Board.prototype.getCreatorUrl = function() {
-  return this.board.creator.url;
-};
-
-Board.prototype.getCreatorId = function() {
-  return this.board.creator.id;
-};
-
-Board.prototype.getCreatorFirstName = function() {
-  return this.board.creator.first_name;
-};
-
-Board.prototype.getCreatorLastName = function() {
-  return this.board.creator.last_name;
+  return new User(this.board.creator);
 };
 
 Board.prototype.getCreatorJson = function() {
@@ -88,7 +60,7 @@ Board.prototype.getCountFollowers = function() {
 
 Board.prototype.getImage = function() {
   for(images in this.board.image) {
-    return this.board.image[images].url;
+    return this.board.image[images].url || '';
   }
 
   return '';
@@ -98,7 +70,9 @@ Board.prototype.getImages = function() {
   var img = [];
 
   for(images in this.board.image) {
-    img.push(this.board.image[images].url);
+    if(this.board.image[images].url !== null) {
+      img.push(this.board.image[images].url);
+    }
   }
 
   return img;

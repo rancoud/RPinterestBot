@@ -1,15 +1,6 @@
 function User(user) {
   this.user = user;
-  this.isComplete = true;
 }
-
-User.prototype.isComplete = function() {
-  return this.isComplete;
-};
-
-User.prototype.setComplete = function(bool) {
-  this.isComplete = bool;
-};
 
 User.prototype.getJson = function() {
   return this.user;
@@ -73,7 +64,7 @@ User.prototype.getCountLikes = function() {
 
 User.prototype.getImage = function() {
   for(images in this.user.image) {
-    return this.user.image[images].url;
+    return this.user.image[images].url || '';
   }
 
   return '';
@@ -83,7 +74,9 @@ User.prototype.getImages = function() {
   var img = [];
 
   for(images in this.user.image) {
-    img.push(this.user.image[images].url);
+    if(this.user.image[images].url !== null) {
+      img.push(this.user.image[images].url);
+    }
   }
 
   return img;

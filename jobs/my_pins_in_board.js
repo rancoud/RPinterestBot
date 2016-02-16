@@ -7,20 +7,13 @@ client.getPinsInBoard(options[0], {cursor:''}, function (error, pins, pagination
 
   var max = pins.length;
   for (var i = 0; i < max; i++) {
-    console.log("id: " + pins[i].getId());
-    console.log("link: " + pins[i].getLink());
-    console.log("original link: " + pins[i].getOriginalLink());
-    console.log("url: " + pins[i].getUrl());
-    console.log("creator: " + require('util').inspect(pins[i].getCreator(), { depth: null }));
-    console.log("creator url: " + pins[i].getCreatorUrl());
-    console.log("creator id: " + pins[i].getCreatorId());
-    console.log("getCreatorFirstName: " + pins[i].getCreatorFirstName());
-    console.log("getCreatorLastName: " + pins[i].getCreatorLastName());
+    console.log("getId: " + pins[i].getId());
+    console.log("getLink: " + pins[i].getLink());
+    console.log("getOriginalLink: " + pins[i].getOriginalLink());
+    console.log("getUrl: " + pins[i].getUrl());
+    console.log("getCreator: " + require('util').inspect(pins[i].getCreator(), { depth: null }));
     console.log("getCreatorJson: " + require('util').inspect(pins[i].getCreatorJson(), { depth: null }));
     console.log("getBoard: " + require('util').inspect(pins[i].getBoard(), { depth: null }));
-    console.log("getBoardUrl: " + pins[i].getBoardUrl());
-    console.log("getBoardId: " + pins[i].getBoardId());
-    console.log("getBoardName: " + pins[i].getBoardName());
     console.log("getBoardJson: " + require('util').inspect(pins[i].getBoardJson(), { depth: null }));
     console.log("getCreatedAt: " + pins[i].getCreatedAt());
     console.log("getTimestamp: " + pins[i].getTimestamp());

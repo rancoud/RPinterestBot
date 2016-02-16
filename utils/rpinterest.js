@@ -62,7 +62,18 @@ RPinterest.prototype.addQueryFields = function(obj) {
     return '';
   }
 
-  return 'fields=' + this.fields[obj].join(',');
+  var fields = 'fields=' + this.fields[obj].join(',');
+
+  if(obj === 'board') {
+    fields = fields.replace('creator', 'creator(' + this.fields['user'].join(',') + ')');
+  }
+
+  if(obj === 'pin') {
+    fields = fields.replace('creator', 'creator(' + this.fields['user'].join(',') + ')');
+    fields = fields.replace('board', 'board(' + this.fields['board'].join(',') + ')');
+  }
+
+  return fields;
 };
 
 RPinterest.prototype.addQueryLimit = function() {
