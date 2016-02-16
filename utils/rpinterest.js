@@ -213,9 +213,97 @@ RPinterest.prototype.mySuggestedBoards = function(pin, callback) {
   });
 };
 
+RPinterest.prototype.myLikes = function(parameters, callback) {
+  var queryCursor = '';
+  if(parameters && parameters.cursor && parameters.cursor.length > 0) {
+    queryCursor = '&cursor=' + parameters.cursor;
+  }
+
+  this.callApiV1('GET', 'me/likes/?' + this.addQueryAccessToken() + '&' + this.addQueryFields('pin') + queryCursor, function(error, data){
+    if(error !== false) {
+      callback(error, false);
+    }
+    else{
+      data = JSON.parse(data);
+      var max = data.data.length;
+      for(var i = 0; i < max; i++) {
+        data.data[i] = new Pin(data.data[i]);
+      }
+
+      callback(null, data.data, data.page);
+    }
+  });
+};
+
+RPinterest.prototype.myPins = function(parameters, callback) {
+  var queryCursor = '';
+  if(parameters && parameters.cursor && parameters.cursor.length > 0) {
+    queryCursor = '&cursor=' + parameters.cursor;
+  }
+
+  this.callApiV1('GET', 'me/pins/?' + this.addQueryAccessToken() + '&' + this.addQueryFields('pin') + queryCursor, function(error, data){
+    if(error !== false) {
+      callback(error, false);
+    }
+    else{
+      data = JSON.parse(data);
+      var max = data.data.length;
+      for(var i = 0; i < max; i++) {
+        data.data[i] = new Pin(data.data[i]);
+      }
+
+      callback(null, data.data, data.page);
+    }
+  });
+};
+
+RPinterest.prototype.searchMyBoards = function(query, parameters, callback) {
+  var queryCursor = '';
+  if(parameters && parameters.cursor && parameters.cursor.length > 0) {
+    queryCursor = '&cursor=' + parameters.cursor;
+  }
+
+  this.callApiV1('GET', 'me/search/boards/?' + this.addQueryAccessToken() + '&query=' + query + '&' + this.addQueryFields('board') + queryCursor, function(error, data){
+    if(error !== false) {
+      callback(error, false);
+    }
+    else{
+      data = JSON.parse(data);
+      var max = data.data.length;
+      for(var i = 0; i < max; i++) {
+        data.data[i] = new Board(data.data[i]);
+      }
+
+      callback(null, data.data, data.page);
+    }
+  });
+};
+
+RPinterest.prototype.searchMyPins = function(query, parameters, callback) {
+  var queryCursor = '';
+  if(parameters && parameters.cursor && parameters.cursor.length > 0) {
+    queryCursor = '&cursor=' + parameters.cursor;
+  }
+
+  this.callApiV1('GET', 'me/search/pins/?' + this.addQueryAccessToken() + '&query=' + query + '&' + this.addQueryFields('pin') + queryCursor, function(error, data){
+    if(error !== false) {
+      callback(error, false);
+    }
+    else{
+      data = JSON.parse(data);
+      var max = data.data.length;
+      for(var i = 0; i < max; i++) {
+        data.data[i] = new Pin(data.data[i]);
+      }
+
+      callback(null, data.data, data.page);
+    }
+  });
+};
+
 RPinterest.prototype.getPinsInBoard = function(board, parameters, callback) {
   var queryCursor = '';
-  if(parameters && parameters.cursor !== undefined) {
+  if(parameters && parameters.cursor && parameters.cursor.length > 0) {
     queryCursor = '&cursor=' + parameters.cursor;
   }
 
