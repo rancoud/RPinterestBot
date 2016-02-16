@@ -1,5 +1,5 @@
 require(__dirname + '/doc/api.js');
-
+colors = require('colors');
 options = [];
 // get options
 process.argv.forEach(function (val, index, array) {
@@ -9,14 +9,14 @@ process.argv.forEach(function (val, index, array) {
 });
 
 function displayEndpoint(endpoint) {
-  console.log(endpoint.method.toUpperCase() + ' ' + endpoint.url + ' ' + endpoint.description);
+  console.log(endpoint.method.toUpperCase().green + ' ' + endpoint.url.magenta + ' ' + endpoint.description);
 }
 
 function displayDetailsEndpoint(endpoint) {
-  console.log(endpoint.method.toUpperCase() + ' ' + endpoint.url + "\n\nDescription:\n" + endpoint.description);
+  console.log(endpoint.method.toUpperCase().green + ' ' + endpoint.url.magenta + "\nScope: ".cyan + endpoint.scope + "\nDescription: ".cyan + endpoint.description);
 
   displayParametersRequired(endpoint.parameters.required);
-  displayParametersOptionnal(endpoint.parameters.optionnal);
+  displayParametersOptionnal(endpoint.parameters.optional);
 }
 
 function displayParametersRequired(parameters) {
@@ -24,7 +24,7 @@ function displayParametersRequired(parameters) {
     return;
   }
 
-  console.log("\n"+'Parameters required:');
+  console.log("\n"+'Parameters required:'.red);
   for (var i = 0; i < parameters.length; i++) {
     if(typeof parameters[i] === 'string') {
       for (var j = 0; j < api.parameters.length; j++) {
@@ -44,7 +44,7 @@ function displayParametersOptionnal(parameters) {
     return;
   }
 
-  console.log("\n"+'Parameters optionnal:');
+  console.log("\n"+'Parameters optional:'.cyan);
   for (var i = 0; i < parameters.length; i++) {
     if(typeof parameters[i] === 'string') {
       for (var j = 0; j < api.parameters.length; j++) {
@@ -60,7 +60,7 @@ function displayParametersOptionnal(parameters) {
 }
 
 function displayParameters(params) {
-  console.log(params.name + ' (' + params.type + ') -> ' + params.description);
+  console.log(params.name.yellow + ' (' + params.type + ') -> ' + params.description);
 }
 
 if(options.length < 1) {
@@ -80,7 +80,7 @@ if(options[0] === 'get') {
   }
   else {
     for (var i = 0; i < api.endpoints.length; i++) {
-      if(api.endpoints[i].url === options[1]) {
+      if(api.endpoints[i].method === 'get' && api.endpoints[i].url === options[1]) {
         displayDetailsEndpoint(api.endpoints[i]);
         return;
       }
@@ -97,7 +97,41 @@ else if(options[0] === 'post') {
   }
   else {
     for (var i = 0; i < api.endpoints.length; i++) {
-      if(api.endpoints[i].url === options[1]) {
+      if(api.endpoints[i].method === 'post' && api.endpoints[i].url === options[1]) {
+        displayDetailsEndpoint(api.endpoints[i]);
+        return;
+      }
+    }
+  }
+}
+else if(options[0] === 'patch') {
+  if(options.length < 2) {
+    for (var i = 0; i < api.endpoints.length; i++) {
+      if(api.endpoints[i].method === 'patch') {
+        displayEndpoint(api.endpoints[i]);
+      }
+    }
+  }
+  else {
+    for (var i = 0; i < api.endpoints.length; i++) {
+      if(api.endpoints[i].method === 'patch' && api.endpoints[i].url === options[1]) {
+        displayDetailsEndpoint(api.endpoints[i]);
+        return;
+      }
+    }
+  }
+}
+else if(options[0] === 'delete') {
+  if(options.length < 2) {
+    for (var i = 0; i < api.endpoints.length; i++) {
+      if(api.endpoints[i].method === 'delete') {
+        displayEndpoint(api.endpoints[i]);
+      }
+    }
+  }
+  else {
+    for (var i = 0; i < api.endpoints.length; i++) {
+      if(api.endpoints[i].method === 'delete' && api.endpoints[i].url === options[1]) {
         displayDetailsEndpoint(api.endpoints[i]);
         return;
       }

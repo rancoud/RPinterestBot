@@ -59,7 +59,7 @@ It will contain the app name, access token and access token secret.
 **for user argument use in lower case the screen name of the account**  
 
 ## Documentation Pinterest API
-List of endpoints (GET and POST)
+List of endpoints (GET / POST / PATCH / DELETE)
 ```
 node doc
 ```
@@ -71,9 +71,17 @@ List of endpoints (POST only)
 ```
 node doc post
 ```
+List of endpoints (PATCH only)
+```
+node doc patch
+```
+List of endpoints (DELETE only)
+```
+node doc delete
+```
 Endpoint details
 ```
-node doc "statuses/home_timeline"
+node doc "/v1/me/"
 ```
 List of parameters
 ```
@@ -81,8 +89,16 @@ node doc parameters
 ```
 Test endpoint (GET and POST)
 ```
-node doc test "statuses/home_timeline"
+node doc test "/v1/me/"
 ```
+
+## LIMITS
+Sandbox: 200 calls / 60 minutes / token  
+Live: 1000 call / 60 minutes / token  
+
+Url images in 60x60 in sandbox  
+
+Can't see private board (will be never support by pinterest team)  
 
 ## TODO
 * complete
