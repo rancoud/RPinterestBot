@@ -45,7 +45,7 @@ RPinterest.prototype.isValidBoard = function(board, callback) {
 };
 
 RPinterest.prototype.checkValid = function(url, callback) {
-  this.https.get('https://fr.pinterest.com/' + url + '/', function(res) {
+  this.https.get('https://www.pinterest.com/' + url + '/', function(res) {
     if(res.statusCode === 200) {
       callback(true);
     }
@@ -88,32 +88,6 @@ RPinterest.prototype.test = function() {
   console.log('test');
 };
 
-/*
-RPinterest.prototype.getBoardsFromUser = function getBoardsFromUser(user, callback) {
-  if(user.indexOf('/') !== -1) {
-    callback([]);
-    return;
-  }
-
-  this.https.get('https://fr.pinterest.com/' + user + '/', function(res) {
-    if(res.statusCode !== 200) {
-      callback([]);
-    }
-
-    var data = '';
-    res.on('data', function(d) {
-      data+= d;
-    });
-
-    res.on('end', function() {
-      require('fs').writeFileSync('failuser.html', data, 'utf-8');
-    });
-
-  }).on('error', function(e) {
-    callback([]);
-  });
-};
-*/
 RPinterest.prototype.getAuthorizeCodeUrl = function() {
   return 'https://api.pinterest.com/oauth/?'
       + 'response_type=code&'
@@ -207,6 +181,23 @@ RPinterest.prototype.me = function(callback) {
 
 RPinterest.prototype.myBoards = function(callback) {
   this.callApiV1('GET', 'me/boards/?' + this.addQueryAccessToken() + '&' + this.addQueryFields('board'), function(error, data){
+    if(error !== false) {
+      callback(error, false);
+    }
+    else{
+      data = JSON.parse(data);
+      var max = data.data.length;
+      for(var i = 0; i < max; i++) {
+        data.data[i] = new Board(data.data[i]);
+      }
+
+      callback(null, data.data);
+    }
+  });
+};
+
+RPinterest.prototype.mySuggestedBoards = function(pin, callback) {
+  this.callApiV1('GET', 'me/boards/suggested/?' + this.addQueryAccessToken() + '&pin=' + pin + '&' + this.addQueryFields('board'), function(error, data){
     if(error !== false) {
       callback(error, false);
     }
