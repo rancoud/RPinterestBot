@@ -5,6 +5,6 @@ module.exports = [
     consumer_secret: '',
     access_token: '',
     callback_url: '',
-    scope: ['read_public']
+    scope: ['read_public','read_public','write_public','read_relationships','write_relationships']
   }
 ];

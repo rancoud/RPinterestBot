@@ -70,74 +70,24 @@ else {
 }
 
 // setup server
-http = require('http');
-server = http.createServer(function (req, res) {
+var http = require('http');
+var server = http.createServer(function (req, res) {
   if(req.url === '/') {
-    client.getAuthUrl(function(oauthData){
-      log.info('RPinterestBot SaveOauth', 'Generate authentification url %s', oauthData.url);
-      authData = oauthData;
-      res.writeHead(302, {'Location': oauthData.url});
-      res.end();
-      return;
-    });
+    var url = client.getAuthorizeCodeUrl();
+    log.info('RPinterestBot SaveOauth', 'Generate authentification url %s', url);
+    res.writeHead(302, {'Location': url});
+    res.end();
+    return;
   }
   else {
     var query = require('url').parse(req.url, true).query;
-    if(query.oauth_token === undefined || query.oauth_verifier === undefined) {
+
+    if(query.code === undefined) {
       return;
     }
 
-    client.resetAccessToken();
-
-    client.authenticate(query.oauth_token, authData.oauth_token_secret, query.oauth_verifier, function(accessToken) {
-      if(accessToken !== false) {
-        accessToken.app_name = client.getAppName();
-        client.setAccessToken(accessToken.access_token_key, accessToken.access_token_secret);
-        client.get('account/settings',  function(error, tweet, response) {
-          if(error) {
-            logPinterestError(error);
-            throw error;
-          }
-
-          // write file in oauth_access_cache
-          var fileToken = __dirname + '/oauth_access_cache/' + tweet.screen_name.toLowerCase() + '.tok';
-          var accessTokenFileStats = null;
-          var accessTokenJson = [];
-          var found = false;
-
-          try {
-            accessTokenFileStats = fs.statSync(fileToken);
-          } catch (e) {
-            //
-          }
-
-          if(accessTokenFileStats !== null) {
-            accessTokenFileJson = fs.readFileSync(fileToken, 'utf8');
-            accessTokenJson = JSON.parse(accessTokenFileJson);
-            for (var i = 0; i < accessTokenJson.length; i++) {
-              if(accessTokenJson[i].app_name === accessToken.app_name) {
-                found = true;
-                log.info('RPinterestBot SaveOauth', 'Update access token for user %s for app %s', tweet.screen_name.toLowerCase(), accessToken.app_name);
-                accessTokenJson[i] = accessToken;
-                break;
-              }
-            }
-          }
-
-          if(accessTokenFileStats === null || !found) {
-            log.info('RPinterestBot SaveOauth', 'Add access token user %s for app %s', tweet.screen_name.toLowerCase(), accessToken.app_name);
-            accessTokenJson.push(accessToken);
-          }
-
-          fs.writeFileSync(fileToken, JSON.stringify(accessTokenJson));
-        });
-
-        res.writeHead(200, {'Content-Type': 'text/plain'});
-        res.end("Access Token saved");
-
-        return;
-      }
-      else {
+    client.getAccessToken(query.code, function(error, accessToken) {
+      if(error !== false) {
         log.error('RPinterestBot SaveOauth', 'Error in callback authenticate');
 
         res.writeHead(500, {'Content-Type': 'text/plain'});
@@ -145,11 +95,60 @@ server = http.createServer(function (req, res) {
 
         return;
       }
+
+      client.setAccessToken(accessToken.access_token);
+      client.setScope(accessToken.scope);
+
+      accessToken.app_name = client.getAppName();
+
+      client.me(function(error, user) {
+        if(error) {
+          logPinterestError(error);
+          return;
+        }
+
+        // write file in oauth_access_cache
+        var fileToken = __dirname + '/oauth_access_cache/' + user.getUsername().toLowerCase() + '.tok';
+        var accessTokenFileStats = null;
+        var accessTokenJson = [];
+        var found = false;
+
+        try {
+          accessTokenFileStats = fs.statSync(fileToken);
+        } catch (e) {
+          //
+        }
+
+        if(accessTokenFileStats !== null) {
+          accessTokenFileJson = fs.readFileSync(fileToken, 'utf8');
+          accessTokenJson = JSON.parse(accessTokenFileJson);
+          for (var i = 0; i < accessTokenJson.length; i++) {
+            if(accessTokenJson[i].app_name === accessToken.app_name) {
+              found = true;
+              log.info('RPinterestBot SaveOauth', 'Update access token for user %s for app %s', user.getUsername().toLowerCase(), accessToken.app_name);
+              accessTokenJson[i] = accessToken;
+              break;
+            }
+          }
+        }
+
+        if(accessTokenFileStats === null || !found) {
+          log.info('RPinterestBot SaveOauth', 'Add access token user %s for app %s', user.getUsername().toLowerCase(), accessToken.app_name);
+          accessTokenJson.push(accessToken);
+        }
+
+        fs.writeFileSync(fileToken, JSON.stringify(accessTokenJson));
+      });
+
+      res.writeHead(200, {'Content-Type': 'text/plain'});
+      res.end("Access Token saved");
+
+      return;
     });
   }
 });
 
 // now that server is running
 server.listen(3000, '127.0.0.1', function(){
-  log.info('RPinterestBot SaveOauth', 'Server listening');
+  log.info('RPinterestBot SaveOauth', 'Server listening on 127.0.0.1:3000');
 });

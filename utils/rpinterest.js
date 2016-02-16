@@ -15,11 +15,11 @@ RPinterest.prototype.getAppName = function() {
 };
 
 RPinterest.prototype.setAccessToken = function(accessToken) {
-  return this.conf.accessToken = accessToken;
+  this.conf.access_token = accessToken;
 };
 
 RPinterest.prototype.setScope = function(scope) {
-  return this.conf.scope = scope;
+  this.conf.scope = scope;
 };
 
 RPinterest.prototype.updateRateLimit = function(rateLimit) {
@@ -119,16 +119,44 @@ RPinterest.prototype.getAuthorizeCodeUrl = function() {
       + 'response_type=code&'
       + 'redirect_uri=' + this.conf.callback_url + '&'
       + 'client_id=' + this.conf.consumer_key + '&'
-      + 'scope=' + this.conf.scope + '&'
-      + 'state=768uyFys';
+      + 'scope=' + this.conf.scope.join(',');
 };
 
-RPinterest.prototype.getAccessTokenUrl = function(code) {
-  return 'https://api.pinterest.com/v1/oauth/token?'
-      + 'grant_type=authorization_code&'
+RPinterest.prototype.getAccessToken = function(code, callback) {
+  var uri = 'grant_type=authorization_code&'
       + 'client_id=' + this.conf.consumer_key + '&'
       + 'client_secret=' + this.conf.consumer_secret + '&'
       + 'code=' + code;
+
+  var that = this;
+
+  var options = {
+    hostname: this.apiDomain,
+    port: 443,
+    path: '/v1/oauth/token?' + uri,
+    method: 'POST'
+  };
+
+  var req = that.https.request(options, function(res) {
+    var data = '';
+    res.on('data', function(chunkData) {
+      data+= chunkData;
+    });
+
+    res.on('end', function() {
+      if(res.statusCode === 200) {
+        callback(false, JSON.parse(data));
+      }
+      else {
+        callback(JSON.parse(data), false);
+      }
+    });
+  });
+  req.end();
+
+  req.on('error', function(e) {
+    callback(e, false);
+  });
 };
 
 RPinterest.prototype.checkScope = function() {
@@ -202,7 +230,6 @@ RPinterest.prototype.myBoards = function(callback) {
   });
 };
 
-// TODO : pagination
 RPinterest.prototype.getPinsInBoard = function(board, parameters, callback) {
   var queryCursor = '';
   if(parameters && parameters.cursor !== undefined) {
@@ -225,12 +252,12 @@ RPinterest.prototype.getPinsInBoard = function(board, parameters, callback) {
   });
 };
 
-/*Pinterest.prototype.setAccessTokenByUser = function (user) {
+RPinterest.prototype.setAccessTokenByUser = function (user) {
   try {
     var tokenJson = JSON.parse(fs.readFileSync(__dirname + '/../oauth_access_cache/' + user + '.tok'));
     for (var i = 0; i < tokenJson.length; i++) {
       if(tokenJson[i].app_name === this.getAppName()) {
-        this.setAccessToken(tokenJson[i].access_token_key, tokenJson[i].access_token_secret);
+        this.setAccessToken(tokenJson[i].access_token);
         return;
       }
     }
@@ -242,5 +269,5 @@ RPinterest.prototype.getPinsInBoard = function(board, parameters, callback) {
   log.error('RPinterestBot', 'Access token user %s not usable with app %s', screenName, this.getAppName());
   process.exit(1);
 };
-*/
+
 global.RPinterest = RPinterest;
