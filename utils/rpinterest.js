@@ -4,7 +4,8 @@ function RPinterest(confPinterestApp) {
   this.fields = {
     user: ['id', 'username', 'first_name', 'last_name', 'bio', 'created_at', 'counts', 'image', 'account_type'],
     board: ['id', 'name', 'url', 'description', 'creator', 'created_at', 'counts', 'image', 'privacy', 'reason'],
-    pin: ['id', 'link', 'original_link', 'url', 'creator', 'board', 'created_at', 'note', 'color', 'counts', 'media', 'attribution', 'image', 'metadata']
+    pin: ['id', 'link', 'original_link', 'url', 'creator', 'board', 'created_at', 'note', 'color', 'counts', 'media', 'attribution', 'image', 'metadata'],
+    topic: ['id', 'name']
   };
   this.limit = 100;
   this.apiDomain = 'api.pinterest.com';
@@ -301,6 +302,106 @@ RPinterest.prototype.searchMyPins = function(query, parameters, callback) {
   });
 };
 
+RPinterest.prototype.myFollowers = function(parameters, callback) {
+  var queryCursor = '';
+  if(parameters && parameters.cursor && parameters.cursor.length > 0) {
+    queryCursor = '&cursor=' + parameters.cursor;
+  }
+
+  this.callApiV1('GET', 'me/followers/?' + this.addQueryAccessToken() + '&' + this.addQueryLimit() + '&' + this.addQueryFields('user') + queryCursor, function(error, data){
+    if(error !== false) {
+      callback(error, false);
+    }
+    else {
+      data = JSON.parse(data);
+      var max = data.data.length;
+      for(var i = 0; i < max; i++) {
+        data.data[i] = new User(data.data[i]);
+      }
+
+      callback(null, data.data, data.page);
+    }
+  });
+};
+
+RPinterest.prototype.myFollowingBoards = function(parameters, callback) {
+  var queryCursor = '';
+  if(parameters && parameters.cursor && parameters.cursor.length > 0) {
+    queryCursor = '&cursor=' + parameters.cursor;
+  }
+
+  this.callApiV1('GET', 'me/following/boards/?' + this.addQueryAccessToken() + '&' + this.addQueryLimit() + '&' + this.addQueryFields('board') + queryCursor, function(error, data){
+    if(error !== false) {
+      callback(error, false);
+    }
+    else {
+      data = JSON.parse(data);
+      var max = data.data.length;
+      for(var i = 0; i < max; i++) {
+        data.data[i] = new Board(data.data[i]);
+      }
+
+      callback(null, data.data, data.page);
+    }
+  });
+};
+
+RPinterest.prototype.myFollowingInterests = function(parameters, callback) {
+  var queryCursor = '';
+  if(parameters && parameters.cursor && parameters.cursor.length > 0) {
+    queryCursor = '&cursor=' + parameters.cursor;
+  }
+
+  this.callApiV1('GET', 'me/following/interests/?' + this.addQueryAccessToken() + '&' + this.addQueryLimit() + '&' + this.addQueryFields('topic') + queryCursor, function(error, data){
+    if(error !== false) {
+      callback(error, false);
+    }
+    else {
+      data = JSON.parse(data);
+      var max = data.data.length;
+      for(var i = 0; i < max; i++) {
+        data.data[i] = new Topic(data.data[i]);
+      }
+
+      callback(null, data.data, data.page);
+    }
+  });
+};
+
+RPinterest.prototype.myFollowingUsers = function(parameters, callback) {
+  var queryCursor = '';
+  if(parameters && parameters.cursor && parameters.cursor.length > 0) {
+    queryCursor = '&cursor=' + parameters.cursor;
+  }
+
+  this.callApiV1('GET', 'me/following/users/?' + this.addQueryAccessToken() + '&' + this.addQueryLimit() + '&' + this.addQueryFields('user') + queryCursor, function(error, data){
+    if(error !== false) {
+      callback(error, false);
+    }
+    else {
+      data = JSON.parse(data);
+      var max = data.data.length;
+      for(var i = 0; i < max; i++) {
+        data.data[i] = new User(data.data[i]);
+      }
+
+      callback(null, data.data, data.page);
+    }
+  });
+};
+
+RPinterest.prototype.getBoard = function(board, callback) {
+  this.callApiV1('GET', 'boards/' + board + '/?' + this.addQueryAccessToken() + '&' + this.addQueryLimit() + '&' + this.addQueryFields('board'), function(error, data){
+    if(error !== false) {
+      callback(error, false);
+    }
+    else {
+      data = JSON.parse(data);
+      callback(null, new Board(data.data));
+    }
+  });
+};
+
 RPinterest.prototype.getPinsInBoard = function(board, parameters, callback) {
   var queryCursor = '';
   if(parameters && parameters.cursor && parameters.cursor.length > 0) {
@@ -319,6 +420,18 @@ RPinterest.prototype.getPinsInBoard = function(board, parameters, callback) {
       }
 
       callback(null, data.data, data.page);
+    }
+  });
+};
+
+RPinterest.prototype.getPin = function(pin, callback) {
+  this.callApiV1('GET', 'pins/' + pin + '/?' + this.addQueryAccessToken() + '&' + this.addQueryLimit() + '&' + this.addQueryFields('pin'), function(error, data){
+    if(error !== false) {
+      callback(error, false);
+    }
+    else {
+      data = JSON.parse(data);
+      callback(null, new Pin(data.data));
     }
   });
 };
