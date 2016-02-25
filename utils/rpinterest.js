@@ -85,8 +85,12 @@ RPinterest.prototype.addQueryAccessToken = function() {
   return 'access_token=' + this.conf.access_token;
 };
 
-RPinterest.prototype.test = function() {
-  console.log('test');
+RPinterest.prototype.addParameters = function(parameters) {
+  var queries = [];
+  for(parameter in parameters) {
+    queries.push(parameter + '=' + encodeURIComponent(parameters[parameter]));
+  }
+  return queries.join('&');
 };
 
 RPinterest.prototype.getAuthorizeCodeUrl = function() {
@@ -151,7 +155,7 @@ RPinterest.prototype.callApiV1 = function(method, uri, callback) {
     });
 
     res.on('end', function() {
-      if(res.statusCode === 200) {
+      if(res.statusCode === 200 || res.statusCode === 201) {
         that.updateRateLimit(res.headers['x-ratelimit-remaining']);
         callback(false, data);
       }
@@ -432,6 +436,144 @@ RPinterest.prototype.getPin = function(pin, callback) {
     else {
       data = JSON.parse(data);
       callback(null, new Pin(data.data));
+    }
+  });
+};
+
+RPinterest.prototype.followBoard = function(board, callback) {
+  this.callApiV1('POST', 'me/following/boards/?' + this.addQueryAccessToken() + '&board=' + board, function(error, data){
+    if(error !== false) {
+      callback(error);
+    }
+    else {
+      data = JSON.parse(data);
+      callback(data.data);
+    }
+  });
+};
+
+RPinterest.prototype.followUser = function(user, callback) {
+  this.callApiV1('POST', 'me/following/users/?' + this.addQueryAccessToken() + '&user=' + user, function(error, data){
+    if(error !== false) {
+      callback(error);
+    }
+    else {
+      data = JSON.parse(data);
+      callback(data.data);
+    }
+  });
+};
+
+RPinterest.prototype.createBoard = function(parameters, callback) {
+  if(parameters.name === undefined) {
+    callback({code:"", message:"parameters name is required"}, null);
+    return;
+  }
+
+  this.callApiV1('POST', 'boards/?' + this.addQueryAccessToken() + '&' + this.addParameters(parameters), function(error, data){
+    if(error !== false) {
+      callback(error);
+    }
+    else {
+      data = JSON.parse(data);
+      callback(null, new Board(data.data));
+    }
+  });
+};
+
+RPinterest.prototype.createPin = function(parameters, callback) {
+  if(parameters.board === undefined) {
+    callback({code:"", message:"parameters board is required"}, null);
+    return;
+  }
+  if(parameters.note === undefined) {
+    callback({code:"", message:"parameters note is required"}, null);
+    return;
+  }
+  if(parameters.image === undefined && parameters.image_url === undefined && parameters.image_base64 === undefined) {
+    callback({code:"", message:"parameters image OR image_url OR image_base64 is required"}, null);
+    return;
+  }
+  // TODO supoort image form data
+  this.callApiV1('POST', 'pins/?' + this.addQueryAccessToken() + '&' + this.addParameters(parameters), function(error, data){
+    if(error !== false) {
+      callback(error);
+    }
+    else {
+      data = JSON.parse(data);
+      callback(null, new Pin(data.data));
+    }
+  });
+};
+
+RPinterest.prototype.updateBoard = function(board, parameters, callback) {
+  this.callApiV1('PATCH', 'boards/' + board + '/?' + this.addQueryAccessToken() + '&' + this.addParameters(parameters), function(error, data){
+    if(error !== false) {
+      callback(error);
+    }
+    else {
+      data = JSON.parse(data);
+      callback(null, new Board(data.data));
+    }
+  });
+};
+
+RPinterest.prototype.updatePin = function(pin, parameters, callback) {
+  this.callApiV1('PATCH', 'pins/' + pin + '/?' + this.addQueryAccessToken() + '&' + this.addParameters(parameters), function(error, data){
+    if(error !== false) {
+      callback(error);
+    }
+    else {
+      data = JSON.parse(data);
+      callback(null, new Pin(data.data));
+    }
+  });
+};
+
+RPinterest.prototype.unfollowBoard = function(board, callback) {
+  this.callApiV1('DELETE', 'me/following/boards/' + board + '/?' + this.addQueryAccessToken(), function(error, data){
+    if(error !== false) {
+      callback(error);
+    }
+    else {
+      data = JSON.parse(data);
+      callback(data.data);
+    }
+  });
+};
+
+RPinterest.prototype.unfollowUser = function(user, callback) {
+  this.callApiV1('DELETE', 'me/following/users/' + user + '/?' + this.addQueryAccessToken(), function(error, data){
+    if(error !== false) {
+      callback(error);
+    }
+    else {
+      data = JSON.parse(data);
+      callback(data.data);
+    }
+  });
+};
+
+RPinterest.prototype.deleteBoard = function(board, callback) {
+  this.callApiV1('DELETE', 'boards/' + board + '/?' + this.addQueryAccessToken(), function(error, data){
+    if(error !== false) {
+      callback(error);
+    }
+    else {
+      data = JSON.parse(data);
+      callback(data.data);
+    }
+  });
+};
+
+RPinterest.prototype.deletePin = function(pin, callback) {
+  this.callApiV1('DELETE', 'pins/' + pin + '/?' + this.addQueryAccessToken(), function(error, data){
+    if(error !== false) {
+      callback(error);
+    }
+    else {
+      data = JSON.parse(data);
+      callback(data.data);
     }
   });
 };
