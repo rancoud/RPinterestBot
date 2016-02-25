@@ -99,7 +99,7 @@ node doc test "/v1/me/"
 
 ## LIMITS
 Sandbox: 200 calls / 60 minutes / token  
-Live: 1000 call / 60 minutes / token  
+Live: 1000 calls / 60 minutes / token  
 
 Url images in 60x60 in sandbox  
 
@@ -115,5 +115,3 @@ List of Scopes
 * rate-limit-save
 * add scope in doc
 * check scope on api call
-
-## Nota Bene
