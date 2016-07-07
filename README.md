@@ -112,6 +112,7 @@ List of Scopes
 * write_relationships : Use PATCH, POST and DELETE methods on a user’s follows and followers (on boards, users and interests).  
 
 ## TODO
+* upload file
 * rate-limit-save
 * add scope in doc
 * check scope on api call
