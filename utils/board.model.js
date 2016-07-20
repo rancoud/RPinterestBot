@@ -15,7 +15,7 @@ Board.prototype.getName = function() {
 };
 
 Board.prototype.getUrl = function() {
-  return this.board.name;
+  return this.board.url;
 };
 
 Board.prototype.getDescription = function() {
