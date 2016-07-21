@@ -686,6 +686,22 @@ RPinterest.prototype.deletePin = function(pin, callback) {
   });
 };
 
+RPinterest.prototype.isAccessTokenUserCompatibleWithCurrentApp = function (user) {
+  try {
+    var tokenJson = JSON.parse(fs.readFileSync(__dirname + '/../oauth_access_cache/' + user + '.tok'));
+    for (var i = 0; i < tokenJson.length; i++) {
+      if(tokenJson[i].app_name === this.getAppName()) {
+        return true;
+      }
+    }
+  } catch (e) {
+    log.error('RPinterestBot', 'Access token not found for user %s', user);
+    process.exit(1);
+  }
+
+  return false;
+};
+
 RPinterest.prototype.setAccessTokenByUser = function (user) {
   try {
     var tokenJson = JSON.parse(fs.readFileSync(__dirname + '/../oauth_access_cache/' + user + '.tok'));

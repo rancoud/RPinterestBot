@@ -42,9 +42,12 @@ global.getPinterestApp = function getPinterestApp(name, arrayEndpoints) {
           }
         });
         if(tokenFiles.length === 1) {
-          globalUser = tokenFiles[0].replace('.tok', '');
-          log.info('RPinterestBot', 'Use Token user: %s', globalUser);
-          client.setAccessTokenByUser(globalUser);
+          var possibleUser = tokenFiles[0].replace('.tok', '');
+          if(client.isAccessTokenUserCompatibleWithCurrentApp(possibleUser)) {
+            globalUser = possibleUser;
+            log.info('RPinterestBot', 'Use Token user: %s', globalUser);
+            client.setAccessTokenByUser(globalUser);
+          }
         }
       }
       return client;
