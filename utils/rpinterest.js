@@ -23,8 +23,15 @@ RPinterest.prototype.setScope = function(scope) {
   this.conf.scope = scope;
 };
 
-RPinterest.prototype.updateRateLimit = function(rateLimit) {
-  //
+RPinterest.prototype.updateRateLimit = function(remainingRateLimit) {
+  var rateLimitApp = getRateLimitByName(this.getAppName());
+
+  if(globalUser !== undefined && rateLimitApp[globalUser] !== undefined) {
+    rateLimitApp[globalUser]['last_access'] = new Date().getTime();
+    rateLimitApp[globalUser]['remaining'] = parseInt(remainingRateLimit);
+
+    saveRateLimitByName(this.getAppName(), JSON.stringify(rateLimitApp));
+  }
 };
 
 RPinterest.prototype.isValidUser = function(user, callback) {
@@ -168,7 +175,6 @@ RPinterest.prototype.callApiV1 = function(method, uri, callback, filepath) {
 
         toWrite.push('--' + boundary + endl);
         toWrite.push('Content-Disposition: form-data; name="image"; filename="' + name + '"' + endl);
-        //toWrite.push('Content-Type: image/png');
         toWrite.push(endl);
         toWrite.push(files[idxFiles]);
       }
@@ -211,6 +217,7 @@ RPinterest.prototype.callApiV1 = function(method, uri, callback, filepath) {
         callback(false, data);
       }
       else {
+        that.updateRateLimit(res.headers['x-ratelimit-remaining']);
         callback(JSON.parse(data), false);
       }
     });
