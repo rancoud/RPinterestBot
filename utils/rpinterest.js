@@ -700,7 +700,7 @@ RPinterest.prototype.setAccessTokenByUser = function (user) {
     process.exit(1);
   }
 
-  log.error('RPinterestBot', 'Access token user %s not usable with app %s', screenName, this.getAppName());
+  log.error('RPinterestBot', 'Access token user %s not usable with app %s', user, this.getAppName());
   process.exit(1);
 };
 

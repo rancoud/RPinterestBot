@@ -6,9 +6,10 @@ global.getPinterestApp = function getPinterestApp(name, arrayEndpoints) {
   if(name !== undefined) {
     for (var i = 0; i < confPinterestApp.length; i++) {
       if(confPinterestApp[i].name === name) {
-        log.info('RPinterestBot', 'Use Pinterest app %s', name);
+        log.info('RPinterestBot', 'Use Pinterest app: %s', name);
         client = new RPinterest(confPinterestApp[i]);
         if(globalUser !== null) {
+          log.info('RPinterestBot', 'Use Token user: %s', globalUser);
           client.setAccessTokenByUser(globalUser);
         }
         return client;
@@ -20,10 +21,31 @@ global.getPinterestApp = function getPinterestApp(name, arrayEndpoints) {
   else {
     // no arguments? just give the first pinterest app
     if(arrayEndpoints === undefined || !Array.isArray(arrayEndpoints) || arrayEndpoints.length < 1) {
-      log.info('RPinterestBot', 'Use Pinterest app %s', confPinterestApp[0].name);
+      log.info('RPinterestBot', 'Use Pinterest app: %s', confPinterestApp[0].name);
       client = new RPinterest(confPinterestApp[0]);
       if(globalUser !== null) {
+        log.info('RPinterestBot', 'Use Token user: %s', globalUser);
         client.setAccessTokenByUser(globalUser);
+      }
+      else {
+        // if we have a user token but not specified we used it
+        var tokenFiles = [];
+        var catchTokenFile = true;
+        fs.readdirSync(__dirname + '/../oauth_access_cache/').forEach(function(file) {
+          if(catchTokenFile) {
+            if(file.match(/\.tok$/) !== null) {
+              tokenFiles.push(file);
+              if(tokenFiles.length > 2) {
+                catchTokenFile = false;
+              }
+            }
+          }
+        });
+        if(tokenFiles.length === 1) {
+          globalUser = tokenFiles[0].replace('.tok', '');
+          log.info('RPinterestBot', 'Use Token user: %s', globalUser);
+          client.setAccessTokenByUser(globalUser);
+        }
       }
       return client;
     }
@@ -45,6 +67,7 @@ global.getPinterestApp = function getPinterestApp(name, arrayEndpoints) {
       if(matches[i] === arrayEndpoints.length) {
         client = new RPinterest(confPinterestApp[i]);
         if(globalUser !== null) {
+          log.info('RPinterestBot', 'Use Token user: %s', globalUser);
           client.setAccessTokenByUser(globalUser);
         }
         return client;

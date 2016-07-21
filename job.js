@@ -4,7 +4,6 @@ util = require('util');
 fs = require('fs');
 fs.readdirSync(__dirname + '/utils/').forEach(function(file) {
   if (file.match(/\.js$/) !== null && file !== 'index.js') {
-    var name = file.replace('.js', '');
     require('./utils/' + file);
   }
 });
@@ -175,4 +174,4 @@ function doJob() {
     });
 
   });
-};
+}
