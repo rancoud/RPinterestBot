@@ -112,7 +112,6 @@ List of Scopes
 * write_relationships : Use PATCH, POST and DELETE methods on a user’s follows and followers (on boards, users and interests).  
 
 ## TODO
-* if 1 user and 1 app is setted but not provided in arguments, automaticly use it
 * rate-limit-save
 * check scope on api call
 * add explanation about user token for jobs
