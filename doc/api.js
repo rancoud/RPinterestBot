@@ -300,7 +300,7 @@ api = {
     {
       name: 'image',
       type: 'string',
-      description: 'Upload the image you want to pin using multipart form data'
+      description: 'Filepath - Upload the image you want to pin using multipart form data'
     },
     {
       name: 'image_url',
