@@ -1,3 +1,10 @@
+process.argv.forEach(function (val) {
+  if(val === '-h' || val === '--help') {
+    require(__dirname + '/help/save_oauth.js');
+    process.exit(1);
+  }
+});
+
 // require all files in utils folder
 colors = require('colors');
 util = require('util');

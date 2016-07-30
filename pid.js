@@ -1,3 +1,10 @@
+process.argv.forEach(function (val) {
+  if(val === '-h' || val === '--help') {
+    require(__dirname + '/help/pid.js');
+    process.exit(1);
+  }
+});
+
 // init variables
 fs = require('fs');
 listPids = [];
@@ -15,7 +22,7 @@ fs.readdirSync(__dirname + '/pids/').forEach(function(file) {
 });
 
 // get options
-process.argv.forEach(function (val, index, array) {
+process.argv.forEach(function (val, index) {
   if(index > 1) {
     options.push(val);
   }
@@ -42,7 +49,8 @@ function kill(pid) {
 
 // suppression des pids inexistants
 var _temp = [];
-for (var i = 0; i < listPids.length; i++) {
+var i;
+for (i = 0; i < listPids.length; i++) {
   if(!isRunning(listPids[i].pid)) {
     fs.unlinkSync(listPids[i].file);
   }
@@ -56,7 +64,7 @@ listPids = _temp;
 if(options.length < 1) {
   if(listPids.length > 0) {
     console.log('List of pids:');
-    for (var i = 0; i < listPids.length; i++) {
+    for (i = 0; i < listPids.length; i++) {
       console.log(listPids[i].pid + ' : ' + listPids[i].content);
     }
   }
@@ -67,7 +75,7 @@ if(options.length < 1) {
 
 // option kill + pid -> kill pid
 if(options[0] === 'kill' && options[1] !== 'all' ) {
-  for (var i = 0; i < listPids.length; i++) {
+  for (i = 0; i < listPids.length; i++) {
     if(options[1] === listPids[i].pid) {
       if(kill(listPids[i].pid)) {
         console.log('[SUCCESS] - Kill ' + listPids[i].pid);
@@ -82,7 +90,7 @@ if(options[0] === 'kill' && options[1] !== 'all' ) {
 
 // option kill + all -> kill all pids
 if(options[0] === 'kill' && options[1] === 'all' ) {
-  for (var i = 0; i < listPids.length; i++) {
+  for (i = 0; i < listPids.length; i++) {
     if(kill(listPids[i].pid)) {
       console.log('[SUCCESS] - Kill ' + listPids[i].pid);
       fs.unlinkSync(listPids[i].file);

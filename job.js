@@ -1,3 +1,10 @@
+process.argv.forEach(function (val) {
+  if(val === '-h' || val === '--help') {
+    require(__dirname + '/help/job.js');
+    process.exit(1);
+  }
+});
+
 // require all files in utils folder
 colors = require('colors');
 util = require('util');
@@ -28,7 +35,7 @@ process.on('exit', function() {
 });
 
 // get job + options
-process.argv.forEach(function (val, index, array) {
+process.argv.forEach(function (val, index) {
   if(index == 2) {
     job = val;
   }
