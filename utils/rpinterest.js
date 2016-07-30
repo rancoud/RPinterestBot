@@ -35,6 +35,11 @@ RPinterest.prototype.updateRateLimit = function(remainingRateLimit) {
 };
 
 RPinterest.prototype.isValidUser = function(user, callback) {
+  if(user === undefined || user.trim().length < 1) {
+    callback(false);
+    return;
+  }
+
   if(user.indexOf('/') !== -1) {
     callback(false);
     return;
@@ -44,6 +49,11 @@ RPinterest.prototype.isValidUser = function(user, callback) {
 };
 
 RPinterest.prototype.isValidBoard = function(board, callback) {
+  if(board === undefined || board.trim().length < 1) {
+    callback(false);
+    return;
+  }
+
   if(board.indexOf('/') === -1) {
     callback(false);
     return;
@@ -733,6 +743,18 @@ RPinterest.prototype.createPin = function(parameters, callback) {
 };
 
 RPinterest.prototype.updateBoard = function(board, parameters, callback) {
+  this.isAccessTokenSetted();
+
+  if(board === undefined || board.trim().length < 1) {
+    callback({code:"", message:"board is required"}, null);
+    return;
+  }
+
+  if(board.indexOf('/') === -1) {
+    callback({code:"", message:"board format is incorrect"}, null);
+    return;
+  }
+
   this.callApiV1('PATCH', 'boards/' + board + '/?' + this.addQueryAccessToken() + '&' + this.addParameters(parameters), function(error, data){
     if(error !== false) {
       callback(error);
@@ -745,6 +767,13 @@ RPinterest.prototype.updateBoard = function(board, parameters, callback) {
 };
 
 RPinterest.prototype.updatePin = function(pin, parameters, callback) {
+  this.isAccessTokenSetted();
+
+  if(pin === undefined || pin.trim().length < 1) {
+    callback({code:"", message:"pin is required"}, null);
+    return;
+  }
+
   this.callApiV1('PATCH', 'pins/' + pin + '/?' + this.addQueryAccessToken() + '&' + this.addParameters(parameters), function(error, data){
     if(error !== false) {
       callback(error);
@@ -757,6 +786,18 @@ RPinterest.prototype.updatePin = function(pin, parameters, callback) {
 };
 
 RPinterest.prototype.unfollowBoard = function(board, callback) {
+  this.isAccessTokenSetted();
+
+  if(board === undefined || board.trim().length < 1) {
+    callback({code:"", message:"board is required"}, null);
+    return;
+  }
+
+  if(board.indexOf('/') === -1) {
+    callback({code:"", message:"board format is incorrect"}, null);
+    return;
+  }
+
   this.callApiV1('DELETE', 'me/following/boards/' + board + '/?' + this.addQueryAccessToken(), function(error, data){
     if(error !== false) {
       callback(error);
@@ -769,6 +810,18 @@ RPinterest.prototype.unfollowBoard = function(board, callback) {
 };
 
 RPinterest.prototype.unfollowUser = function(user, callback) {
+  this.isAccessTokenSetted();
+
+  if(user === undefined || user.trim().length < 1) {
+    callback({code:"", message:"user is required"}, null);
+    return;
+  }
+
+  if(user.indexOf('/') !== -1) {
+    callback({code:"", message:"user format is incorrect"}, null);
+    return;
+  }
+
   this.callApiV1('DELETE', 'me/following/users/' + user + '/?' + this.addQueryAccessToken(), function(error, data){
     if(error !== false) {
       callback(error);
