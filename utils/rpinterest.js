@@ -696,6 +696,18 @@ RPinterest.prototype.unfollowUser = function(user, callback) {
 };
 
 RPinterest.prototype.deleteBoard = function(board, callback) {
+  this.isAccessTokenSetted();
+
+  if(board === undefined || board.trim().length < 1) {
+    callback({code:"", message:"board is required"}, null);
+    return;
+  }
+
+  if(board.indexOf('/') === -1) {
+    callback({code:"", message:"board format is incorrect"}, null);
+    return;
+  }
+
   this.callApiV1('DELETE', 'boards/' + board + '/?' + this.addQueryAccessToken(), function(error, data){
     if(error !== false) {
       callback(error);
@@ -708,6 +720,13 @@ RPinterest.prototype.deleteBoard = function(board, callback) {
 };
 
 RPinterest.prototype.deletePin = function(pin, callback) {
+  this.isAccessTokenSetted();
+
+  if(pin === undefined || pin.trim().length < 1) {
+    callback({code:"", message:"pin is required"}, null);
+    return;
+  }
+
   this.callApiV1('DELETE', 'pins/' + pin + '/?' + this.addQueryAccessToken(), function(error, data){
     if(error !== false) {
       callback(error);

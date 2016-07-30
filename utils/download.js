@@ -10,7 +10,7 @@ global.download = function download(url, dest, callback, retry) {
     wrapper = require('http');
   }
   else {
-    log.error('RPinterestBot', 'Url not supported for donwload: %s', url);
+    log.error('RPinterestBot', 'Url not supported for download: %s', url);
     return;
   }
   var fs = require('fs');
