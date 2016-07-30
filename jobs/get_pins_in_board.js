@@ -1,5 +1,17 @@
+/*
+ Get pins in board
+
+ Usage:
+   node job get_pins_in_board <board> [cursor] (-u | --user) <user_name>
+
+ API endpoint used:
+   GET /v1/boards/<board>/pins/
+
+ Scope:
+   read_public
+*/
 var client = getPinterestApp();
-client.getPinsInBoard(options[0], {cursor:''}, function (error, pins, pagination) {
+client.getPinsInBoard(options[0], {cursor:options[1]}, function (error, pins, pagination) {
   if(error) {
     logPinterestError(error);
     return;
@@ -43,4 +55,6 @@ client.getPinsInBoard(options[0], {cursor:''}, function (error, pins, pagination
     console.log("getMetadata: " + require('util').inspect(pins[i].getMetadata(), { depth: null }));
     console.log("getMetadataJson: " + require('util').inspect(pins[i].getMetadataJson(), { depth: null }));
   }
+
+  console.log(pagination);
 });

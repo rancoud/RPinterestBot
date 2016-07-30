@@ -6,6 +6,9 @@
 
  API endpoint used:
    GET /v1/me/
+
+ Scope:
+   read_public
 */
 var client = getPinterestApp();
 client.me(function (error, user) {

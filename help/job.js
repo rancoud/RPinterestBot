@@ -43,13 +43,13 @@ if(content == null) {
   }
 }
 
-if(content === null || content.substr(0,2) !== '/*') {
+if(content === null) {
   console.log('No job found');
   process.exit(1);
 }
 
 if(content.substr(0,2) !== '/*') {
-  console.log('No doc for this job found');
+  console.log('No doc found for this job');
   process.exit(1);
 }
 

@@ -7,7 +7,7 @@ function RPinterest(confPinterestApp) {
     pin: ['id', 'link', 'original_link', 'url', 'creator', 'board', 'created_at', 'note', 'color', 'counts', 'media', 'attribution', 'image', 'metadata'],
     topic: ['id', 'name']
   };
-  this.limit = 100;
+  this.limit = 1;
   this.apiDomain = 'api.pinterest.com';
 }
 
@@ -284,6 +284,8 @@ RPinterest.prototype.me = function(callback) {
 };
 
 RPinterest.prototype.myBoards = function(callback) {
+  this.isAccessTokenSetted();
+
   this.callApiV1('GET', 'me/boards/?' + this.addQueryAccessToken() + '&' + this.addQueryFields('board'), function(error, data){
     if(error !== false) {
       callback(error, false);
@@ -301,6 +303,8 @@ RPinterest.prototype.myBoards = function(callback) {
 };
 
 RPinterest.prototype.mySuggestedBoards = function(pin, callback) {
+  this.isAccessTokenSetted();
+
   this.callApiV1('GET', 'me/boards/suggested/?' + this.addQueryAccessToken() + '&pin=' + pin + '&' + this.addQueryFields('board'), function(error, data){
     if(error !== false) {
       callback(error, false);
@@ -318,12 +322,14 @@ RPinterest.prototype.mySuggestedBoards = function(pin, callback) {
 };
 
 RPinterest.prototype.myLikes = function(parameters, callback) {
+  this.isAccessTokenSetted();
+
   var queryCursor = '';
   if(parameters && parameters.cursor && parameters.cursor.length > 0) {
     queryCursor = '&cursor=' + parameters.cursor;
   }
 
-  this.callApiV1('GET', 'me/likes/?' + this.addQueryAccessToken() + '&' + this.addQueryFields('pin') + queryCursor, function(error, data){
+  this.callApiV1('GET', 'me/likes/?' + this.addQueryAccessToken() + '&' + this.addQueryLimit() + '&' +  this.addQueryFields('pin') + queryCursor, function(error, data){
     if(error !== false) {
       callback(error, false);
     }
@@ -340,12 +346,14 @@ RPinterest.prototype.myLikes = function(parameters, callback) {
 };
 
 RPinterest.prototype.myPins = function(parameters, callback) {
+  this.isAccessTokenSetted();
+
   var queryCursor = '';
   if(parameters && parameters.cursor && parameters.cursor.length > 0) {
     queryCursor = '&cursor=' + parameters.cursor;
   }
 
-  this.callApiV1('GET', 'me/pins/?' + this.addQueryAccessToken() + '&' + this.addQueryFields('pin') + queryCursor, function(error, data){
+  this.callApiV1('GET', 'me/pins/?' + this.addQueryAccessToken() + '&' + this.addQueryLimit() + '&' + this.addQueryFields('pin') + queryCursor, function(error, data){
     if(error !== false) {
       callback(error, false);
     }
@@ -362,12 +370,19 @@ RPinterest.prototype.myPins = function(parameters, callback) {
 };
 
 RPinterest.prototype.searchMyBoards = function(query, parameters, callback) {
+  this.isAccessTokenSetted();
+
+  if(query === undefined || query.trim().length < 1) {
+    callback({code:"", message:"query is required and can't be blank"}, null);
+    return;
+  }
+
   var queryCursor = '';
   if(parameters && parameters.cursor && parameters.cursor.length > 0) {
     queryCursor = '&cursor=' + parameters.cursor;
   }
 
-  this.callApiV1('GET', 'me/search/boards/?' + this.addQueryAccessToken() + '&query=' + query + '&' + this.addQueryFields('board') + queryCursor, function(error, data){
+  this.callApiV1('GET', 'me/search/boards/?' + this.addQueryAccessToken() + '&' + this.addQueryLimit() + '&query=' + query + '&' + this.addQueryFields('board') + queryCursor, function(error, data){
     if(error !== false) {
       callback(error, false);
     }
@@ -384,12 +399,19 @@ RPinterest.prototype.searchMyBoards = function(query, parameters, callback) {
 };
 
 RPinterest.prototype.searchMyPins = function(query, parameters, callback) {
+  this.isAccessTokenSetted();
+
+  if(query === undefined || query.trim().length < 1) {
+    callback({code:"", message:"query is required and can't be blank"}, null);
+    return;
+  }
+
   var queryCursor = '';
   if(parameters && parameters.cursor && parameters.cursor.length > 0) {
     queryCursor = '&cursor=' + parameters.cursor;
   }
 
-  this.callApiV1('GET', 'me/search/pins/?' + this.addQueryAccessToken() + '&query=' + query + '&' + this.addQueryFields('pin') + queryCursor, function(error, data){
+  this.callApiV1('GET', 'me/search/pins/?' + this.addQueryAccessToken() + '&' + this.addQueryLimit() + '&query=' + query + '&' + this.addQueryFields('pin') + queryCursor, function(error, data){
     if(error !== false) {
       callback(error, false);
     }
@@ -406,6 +428,8 @@ RPinterest.prototype.searchMyPins = function(query, parameters, callback) {
 };
 
 RPinterest.prototype.myFollowers = function(parameters, callback) {
+  this.isAccessTokenSetted();
+
   var queryCursor = '';
   if(parameters && parameters.cursor && parameters.cursor.length > 0) {
     queryCursor = '&cursor=' + parameters.cursor;
@@ -428,6 +452,8 @@ RPinterest.prototype.myFollowers = function(parameters, callback) {
 };
 
 RPinterest.prototype.myFollowingBoards = function(parameters, callback) {
+  this.isAccessTokenSetted();
+
   var queryCursor = '';
   if(parameters && parameters.cursor && parameters.cursor.length > 0) {
     queryCursor = '&cursor=' + parameters.cursor;
@@ -450,6 +476,8 @@ RPinterest.prototype.myFollowingBoards = function(parameters, callback) {
 };
 
 RPinterest.prototype.myFollowingInterests = function(parameters, callback) {
+  this.isAccessTokenSetted();
+
   var queryCursor = '';
   if(parameters && parameters.cursor && parameters.cursor.length > 0) {
     queryCursor = '&cursor=' + parameters.cursor;
@@ -472,6 +500,8 @@ RPinterest.prototype.myFollowingInterests = function(parameters, callback) {
 };
 
 RPinterest.prototype.myFollowingUsers = function(parameters, callback) {
+  this.isAccessTokenSetted();
+
   var queryCursor = '';
   if(parameters && parameters.cursor && parameters.cursor.length > 0) {
     queryCursor = '&cursor=' + parameters.cursor;
@@ -494,6 +524,18 @@ RPinterest.prototype.myFollowingUsers = function(parameters, callback) {
 };
 
 RPinterest.prototype.getBoard = function(board, callback) {
+  this.isAccessTokenSetted();
+
+  if(board === undefined || board.trim().length < 1) {
+    callback({code:"", message:"board is required"}, null);
+    return;
+  }
+
+  if(board.indexOf('/') === -1) {
+    callback({code:"", message:"board format is incorrect"}, null);
+    return;
+  }
+
   this.callApiV1('GET', 'boards/' + board + '/?' + this.addQueryAccessToken() + '&' + this.addQueryLimit() + '&' + this.addQueryFields('board'), function(error, data){
     if(error !== false) {
       callback(error, false);
@@ -506,6 +548,18 @@ RPinterest.prototype.getBoard = function(board, callback) {
 };
 
 RPinterest.prototype.getPinsInBoard = function(board, parameters, callback) {
+  this.isAccessTokenSetted();
+
+  if(board === undefined || board.trim().length < 1) {
+    callback({code:"", message:"board is required"}, null);
+    return;
+  }
+
+  if(board.indexOf('/') === -1) {
+    callback({code:"", message:"board format is incorrect"}, null);
+    return;
+  }
+
   var queryCursor = '';
   if(parameters && parameters.cursor && parameters.cursor.length > 0) {
     queryCursor = '&cursor=' + parameters.cursor;
@@ -528,7 +582,14 @@ RPinterest.prototype.getPinsInBoard = function(board, parameters, callback) {
 };
 
 RPinterest.prototype.getPin = function(pin, callback) {
-  this.callApiV1('GET', 'pins/' + pin + '/?' + this.addQueryAccessToken() + '&' + this.addQueryLimit() + '&' + this.addQueryFields('pin'), function(error, data){
+  this.isAccessTokenSetted();
+
+  if(pin === undefined || pin.trim().length < 1) {
+    callback({code:"", message:"pin is required"}, null);
+    return;
+  }
+
+  this.callApiV1('GET', 'pins/' + pin + '/?' + this.addQueryAccessToken() + '&' + this.addQueryFields('pin'), function(error, data){
     if(error !== false) {
       callback(error, false);
     }

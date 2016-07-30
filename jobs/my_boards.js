@@ -1,3 +1,15 @@
+/*
+ Get User boards
+
+ Usage:
+   node job my_boards (-u | --user) <user_name>
+
+ API endpoint used:
+   GET /v1/me/boards/
+
+ Scope:
+   read_public
+*/
 var client = getPinterestApp();
 client.myBoards(function (error, boards) {
   if(error) {
