@@ -540,6 +540,18 @@ RPinterest.prototype.getPin = function(pin, callback) {
 };
 
 RPinterest.prototype.followBoard = function(board, callback) {
+  this.isAccessTokenSetted();
+
+  if(board === undefined || board.trim().length < 1) {
+    callback({code:"", message:"board is required"}, null);
+    return;
+  }
+
+  if(board.indexOf('/') === -1) {
+    callback({code:"", message:"board format is incorrect"}, null);
+    return;
+  }
+
   this.callApiV1('POST', 'me/following/boards/?' + this.addQueryAccessToken() + '&board=' + board, function(error, data){
     if(error !== false) {
       callback(error);
@@ -552,6 +564,18 @@ RPinterest.prototype.followBoard = function(board, callback) {
 };
 
 RPinterest.prototype.followUser = function(user, callback) {
+  this.isAccessTokenSetted();
+
+  if(user === undefined || user.trim().length < 1) {
+    callback({code:"", message:"user is required"}, null);
+    return;
+  }
+
+  if(user.indexOf('/') !== -1) {
+    callback({code:"", message:"user format is incorrect"}, null);
+    return;
+  }
+
   this.callApiV1('POST', 'me/following/users/?' + this.addQueryAccessToken() + '&user=' + user, function(error, data){
     if(error !== false) {
       callback(error);

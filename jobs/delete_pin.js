@@ -5,8 +5,11 @@
    node job delete_pin <pin> (-u | --user) <user_name>
 
  API endpoint used:
-   DELETE /v1/pins/<pin>
- */
+   DELETE /v1/pins/<pin>/
+
+ Scope:
+   write_public
+*/
 var client = getPinterestApp();
 client.deletePin(options[0], function (error) {
   if(error) {

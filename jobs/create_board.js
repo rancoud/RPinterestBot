@@ -6,6 +6,9 @@
 
  API endpoint used:
    POST /v1/boards/
+
+ Scope:
+   write_public
 */
 var client = getPinterestApp();
 client.createBoard({name: options[0], description: options[1]}, function (error, board) {
