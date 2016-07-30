@@ -1,15 +1,13 @@
 /*
-Description : Get User Profile
-Required : access_token
-Usage : node job me --user <user_name>
+ Get User profile
+
+ Usage:
+   node job me (-u | --user) <user_name>
+
+ API endpoint used:
+   GET /v1/me/
 */
 var client = getPinterestApp();
-
-if(client.conf.access_token.length === 0) {
-  log.error('RPinterestBot', 'Invalid Access Token');
-  process.exit(1);
-}
-
 client.me(function (error, user) {
   if(error) {
     logPinterestError(error);

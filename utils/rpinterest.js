@@ -270,6 +270,8 @@ RPinterest.prototype.callApiV1 = function(method, uri, callback, filepath) {
 };
 
 RPinterest.prototype.me = function(callback) {
+  this.isAccessTokenSetted();
+
   this.callApiV1('GET', 'me/?' + this.addQueryAccessToken() + '&' + this.addQueryFields('user'), function(error, data){
     if(error !== false) {
       callback(error, false);
@@ -562,9 +564,15 @@ RPinterest.prototype.followUser = function(user, callback) {
 };
 
 RPinterest.prototype.createBoard = function(parameters, callback) {
-  if(parameters.name === undefined) {
-    callback({code:"", message:"parameters name is required"}, null);
+  this.isAccessTokenSetted();
+
+  if(parameters.name === undefined || parameters.name.trim().length < 1) {
+    callback({code:"", message:"board_name is required"}, null);
     return;
+  }
+
+  if(parameters.description === undefined) {
+    parameters.description = '';
   }
 
   this.callApiV1('POST', 'boards/?' + this.addQueryAccessToken() + '&' + this.addParameters(parameters), function(error, data){
@@ -725,6 +733,13 @@ RPinterest.prototype.setAccessTokenByUser = function (user) {
 
   log.error('RPinterestBot', 'Access token user %s not usable with app %s', user, this.getAppName());
   process.exit(1);
+};
+
+RPinterest.prototype.isAccessTokenSetted = function () {
+  if(this.conf.access_token.length === 0) {
+    log.error('RPinterestBot', 'Invalid Access Token, user is required');
+    process.exit(1);
+  }
 };
 
 global.RPinterest = RPinterest;
