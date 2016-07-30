@@ -587,23 +587,41 @@ RPinterest.prototype.createBoard = function(parameters, callback) {
 };
 
 RPinterest.prototype.createPin = function(parameters, callback) {
-  if(parameters.board === undefined) {
+  this.isAccessTokenSetted();
+
+  if(parameters.board === undefined || parameters.board.trim().length < 1) {
     callback({code:"", message:"parameters board is required"}, null);
     return;
   }
-  if(parameters.note === undefined) {
+
+  if(parameters.board.indexOf('/') === -1) {
+    callback({code:"", message:"parameters board format is incorrect"}, null);
+    return;
+  }
+
+  if(parameters.note === undefined  || parameters.note.trim().length < 1) {
     callback({code:"", message:"parameters note is required"}, null);
     return;
   }
-  if(parameters.image === undefined && parameters.image_url === undefined && parameters.image_base64 === undefined) {
+
+  if(
+       (parameters.image === undefined || parameters.image.trim().length < 1)
+    && (parameters.image_url === undefined || parameters.image_url.trim().length < 1)
+    && (parameters.image_base64 === undefined || parameters.image_base64.trim().length < 1)
+  ) {
     callback({code:"", message:"parameters image OR image_url OR image_base64 is required"}, null);
     return;
   }
-  // TODO support image form data
+
+  if(parameters.link === undefined) {
+    parameters.link = '';
+  }
+
   if(parameters.image !== undefined) {
     var subParameters = {
       board: parameters.board,
-      note: parameters.note
+      note: parameters.note,
+      link: parameters.link
     };
 
     this.callApiV1('POST', 'pins/?' + this.addQueryAccessToken() + '&' + this.addParameters(subParameters), function(error, data){
